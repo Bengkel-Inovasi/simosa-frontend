@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-50: #f4f7f3;
+  --color-brand-100: #eaeae6;
+  --color-brand-200: #d1d9cd;
+  --color-brand-500: #708269;
+  --color-brand-600: #5c6b57;
+  --color-brand-700: #4a5845;
+  --color-primary-900: #1a2219;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #f8faf7;
+  --foreground: #222c21;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8faf7;
+  color: #222c21;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Premium Light Sage Card style */
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #e3e8e2;
+  box-shadow: 0 4px 20px -2px rgba(112, 130, 105, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: #a3b19b;
+  box-shadow: 0 10px 30px -4px rgba(112, 130, 105, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Glowing text and UI elements for sage green */
+.text-glow-green {
+  text-shadow: 0 0 12px rgba(112, 130, 105, 0.3);
+}
+
+/* Custom scrollbar matching sage green theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8faf7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d8e2d5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #708269;
+}
+
+/* Leaflet maps - Light/Neutral Theme */
+.leaflet-container {
+  background: #f8faf7 !important;
+}
+
+.leaflet-tile-pane {
+  /* soft clean tint filter */
+  filter: sepia(10%) hue-rotate(60deg) saturate(90%) brightness(98%);
+}
+
+.leaflet-bar {
+  border: 1px solid #e3e8e2 !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(112, 130, 105, 0.08) !important;
+}
+
+.leaflet-bar a {
+  background: #ffffff !important;
+  color: #222c21 !important;
+  border-bottom: 1px solid #e3e8e2 !important;
+}
+
+.leaflet-bar a:hover {
+  background: #f4f7f3 !important;
+  color: #5c6b57 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #222c21 !important;
+  border: 1px solid #d1d9cd !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(112, 130, 105, 0.12) !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+  border: 1px solid #d1d9cd !important;
 }
