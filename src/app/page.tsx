@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSocket } from "@/hooks/useSocket";
 import { useAuth } from "@/context/AuthContext";
 import { SensorReading, Node } from "@/types";
+import { format } from "date-fns";
 import {
   AreaChart,
   Area,
@@ -25,6 +26,7 @@ import {
   TrendingUp,
   Globe,
   Radio,
+  TrendingDown,
 } from "lucide-react";
 
 interface NewsArticle {
@@ -32,6 +34,15 @@ interface NewsArticle {
   link: string;
   source: string;
   pub_date: string;
+}
+
+interface CPOData {
+  price_myr: number;
+  price_idr: number;
+  price_tbs: number;
+  change_percent: number;
+  direction: string;
+  last_update: string;
 }
 
 export default function Dashboard() {
@@ -45,8 +56,9 @@ export default function Dashboard() {
   const [isEditingAlias, setIsEditingAlias] = useState(false);
   const [newAlias, setNewAlias] = useState("");
 
-  // News State
+  // Market & News States
   const [news, setNews] = useState<NewsArticle[]>([]);
+  const [cpoData, setCpoData] = useState<CPOData | null>(null);
 
   // Fetch nodes
   const fetchNodes = () => {
@@ -69,6 +81,12 @@ export default function Dashboard() {
       .then((res) => res.json())
       .then((data) => setNews(data))
       .catch((err) => console.log("Failed to fetch news", err));
+
+    // Fetch CPO Price
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/cpo-price`)
+      .then((res) => res.json())
+      .then((data) => setCpoData(data))
+      .catch((err) => console.log("Failed to fetch CPO price", err));
   }, []);
 
   // Fetch history when selected node changes
@@ -90,7 +108,6 @@ export default function Dashboard() {
     if (lastReading && lastReading.node_mac === selectedNode) {
       setHistory((prev) => {
         const updated = [...prev, lastReading];
-        // Limit to last 50 readings
         return updated.slice(-50);
       });
     }
@@ -111,7 +128,7 @@ export default function Dashboard() {
 
       if (res.ok) {
         setIsEditingAlias(false);
-        fetchNodes(); // Refresh
+        fetchNodes();
       }
     } catch (err) {
       console.error("Failed to update alias:", err);
@@ -245,7 +262,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Grid: Charts and Economic News */}
+      {/* Grid: Charts and Economic News / CPO Price */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Charts - spans 2 cols */}
         <div className="lg:col-span-2 glass-card p-6 rounded-3xl border border-[#e3e8e2] space-y-6 bg-white">
@@ -334,45 +351,106 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Economic News Sidebar - 1 col */}
-        <div className="glass-card p-6 rounded-3xl border border-[#e3e8e2] space-y-6 flex flex-col bg-white">
-          <div className="flex items-center justify-between border-b border-[#e3e8e2] pb-4">
-            <h2 className="text-xl font-bold text-[#3d483b] flex items-center gap-2">
-              <Globe className="text-[#708269] h-5 w-5" />
-              Ekonomi & Sawit
-            </h2>
-            <span className="text-xs text-[#708269] bg-[#708269]/10 px-2 py-0.5 rounded font-bold border border-[#708269]/20">
-              Live Feed
-            </span>
-          </div>
+        {/* Sidebar: CPO Price Widget & Economic News */}
+        <div className="space-y-6 flex flex-col">
+          {/* CPO Price Card */}
+          <div className="glass-card p-6 rounded-3xl border border-[#e3e8e2] bg-white space-y-4 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#e3e8e2] pb-3">
+              <h2 className="text-md font-bold text-[#3d483b] flex items-center gap-2">
+                {cpoData?.direction === "up" ? (
+                  <TrendingUp className="text-green-600 h-5 w-5 animate-pulse" />
+                ) : (
+                  <TrendingDown className="text-rose-600 h-5 w-5 animate-pulse" />
+                )}
+                Harga CPO & TBS Global
+              </h2>
+              <span className="text-[9px] text-[#7b8d77] bg-[#f4f7f3] px-2 py-0.5 rounded border border-[#dbe3da] font-mono">
+                {cpoData?.last_update ? format(new Date(cpoData.last_update), "dd MMM yyyy") : "Memuat..."}
+              </span>
+            </div>
 
-          <div className="space-y-4 overflow-y-auto max-h-[380px] flex-1 pr-1">
-            {news.length > 0 ? (
-              news.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-3.5 rounded-2xl bg-[#f8faf7] hover:bg-[#f4f7f3] transition border border-[#e3e8e2] hover:border-[#a3b19b] shadow-sm"
-                >
-                  <span className="inline-block text-[10px] font-bold text-[#4a5845] bg-[#d1d9cd]/50 px-2 py-0.5 rounded mb-1 border border-[#a3b19b]/30">
-                    {item.source}
+            {cpoData ? (
+              <div className="space-y-3.5">
+                <div className="flex justify-between items-center py-0.5">
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-bold text-slate-800 block">Bursa Malaysia</span>
+                    <span className="text-[10px] text-slate-400 block font-semibold">Crude Palm Oil (MYR/Tonne)</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-extrabold text-slate-800">
+                      {cpoData.price_myr.toLocaleString()} MYR
+                    </span>
+                    <span className={`text-[10px] font-bold block ${cpoData.direction === "up" ? "text-green-600" : "text-rose-600"}`}>
+                      {cpoData.direction === "up" ? "▲ +" : "▼ -"} {cpoData.change_percent.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center py-2 border-t border-slate-100">
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-bold text-[#3d483b] block">Harga CPO Lokal</span>
+                    <span className="text-[10px] text-slate-400 block font-semibold">Estimasi Konversi (IDR/Kg)</span>
+                  </div>
+                  <span className="text-md font-black text-[#708269]">
+                    Rp {Math.round(cpoData.price_idr).toLocaleString()}
                   </span>
-                  <h3 className="text-xs font-semibold text-[#222c21] hover:text-[#708269] transition line-clamp-2">
-                    {item.title}
-                  </h3>
-                  <span className="text-[9px] text-[#7b8d77] mt-1 block">
-                    {new Date(item.pub_date).toLocaleString()}
+                </div>
+
+                <div className="flex justify-between items-center py-2 border-t border-[#708269]/20 bg-[#f4f7f3] px-3.5 py-3 rounded-2xl border border-[#708269]/10 shadow-inner">
+                  <div className="space-y-0.5">
+                    <span className="text-xs font-black text-[#3d483b] block">Estimasi TBS Petani</span>
+                    <span className="text-[9px] text-[#7b8d77] block font-bold">Rasio Penjualan 16% (IDR/Kg)</span>
+                  </div>
+                  <span className="text-lg font-black text-[#4a5845]">
+                    Rp {Math.round(cpoData.price_tbs).toLocaleString()}
                   </span>
-                </a>
-              ))
+                </div>
+              </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-10 text-[#7b8d77]">
-                <div className="animate-spin h-5 w-5 border-2 border-[#708269] border-t-transparent rounded-full mb-2"></div>
-                <span className="text-xs">Mengambil kabar pasar...</span>
+              <div className="flex items-center justify-center py-6 text-slate-400">
+                <div className="animate-spin h-5 w-5 border-2 border-[#708269] border-t-transparent rounded-full mr-2"></div>
+                <span className="text-xs font-semibold">Mengambil harga sawit...</span>
               </div>
             )}
+          </div>
+
+          {/* Economic News Card */}
+          <div className="glass-card p-6 rounded-3xl border border-[#e3e8e2] space-y-4 flex flex-col bg-white shadow-sm flex-1">
+            <div className="flex items-center justify-between border-b border-[#e3e8e2] pb-3">
+              <h2 className="text-md font-bold text-[#3d483b] flex items-center gap-2">
+                <Globe className="text-[#708269] h-5 w-5" />
+                Berita Ekonomi & Sawit
+              </h2>
+              <span className="text-[9px] text-[#708269] bg-[#708269]/10 px-2.5 py-0.5 rounded font-bold border border-[#708269]/20">
+                Live Feed
+              </span>
+            </div>
+
+            <div className="space-y-3 overflow-y-auto max-h-[220px] pr-1">
+              {news.length > 0 ? (
+                news.map((item, idx) => (
+                  <a
+                    key={idx}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-3 rounded-xl bg-[#f8faf7] hover:bg-[#f4f7f3] transition border border-[#e3e8e2] hover:border-[#a3b19b] shadow-sm"
+                  >
+                    <span className="inline-block text-[9px] font-bold text-[#4a5845] bg-[#d1d9cd]/50 px-2 py-0.5 rounded mb-1 border border-[#a3b19b]/30">
+                      {item.source}
+                    </span>
+                    <h3 className="text-xs font-semibold text-[#222c21] hover:text-[#708269] transition line-clamp-2">
+                      {item.title}
+                    </h3>
+                  </a>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-6 text-[#7b8d77]">
+                  <div className="animate-spin h-4 w-4 border-2 border-[#708269] border-t-transparent rounded-full mb-2"></div>
+                  <span className="text-xs font-semibold">Mengambil kabar pasar...</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -409,7 +487,6 @@ function GaugeCard({
 
   return (
     <div className={`glass-card p-6 rounded-3xl border border-[#e3e8e2] relative overflow-hidden bg-white group ${borderColors[color]}`}>
-      {/* Decorative colored glow in top corner */}
       <div
         className={`absolute -right-4 -top-4 w-12 h-12 blur-2xl opacity-40 rounded-full transition-all group-hover:scale-150 duration-500 ${bgGlows[color]}`}
       />
