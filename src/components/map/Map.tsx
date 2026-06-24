@@ -100,7 +100,7 @@ export default function MonitoringMap() {
             icon={node.is_registered ? registeredIcon : unregisteredIcon}
           >
             <Popup className="custom-popup">
-              <div className="p-2 space-y-3 min-w-[200px] text-slate-800 bg-white">
+              <div className="p-2 space-y-3 min-w-[200px] text-[#222c21] bg-white">
                 <div className="flex items-start justify-between border-b border-slate-200 pb-2">
                   <div>
                     {editingMac === node.mac_address ? (
@@ -109,7 +109,7 @@ export default function MonitoringMap() {
                           type="text"
                           value={tempAlias}
                           onChange={(e) => setTempAlias(e.target.value)}
-                          className="bg-transparent text-slate-800 text-xs font-semibold focus:outline-none w-28 px-1"
+                          className="bg-transparent text-[#222c21] text-xs font-semibold focus:outline-none w-28 px-1"
                           placeholder="Edit Alias"
                         />
                         <button
@@ -128,7 +128,7 @@ export default function MonitoringMap() {
                               setEditingMac(node.mac_address);
                               setTempAlias(node.alias || "");
                             }}
-                            className="p-0.5 text-slate-400 hover:text-[#708269] transition"
+                            className="p-0.5 text-slate-500 hover:text-[#708269] transition"
                             title="Edit Alias"
                           >
                             <Edit2 className="h-3 w-3" />
@@ -136,24 +136,24 @@ export default function MonitoringMap() {
                         )}
                       </h3>
                     )}
-                    <span className="text-[10px] text-slate-400 block font-mono mt-0.5">{node.mac_address}</span>
+                    <span className="text-[10px] text-slate-500 block font-mono mt-0.5">{node.mac_address}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-400 font-medium">Status:</span>
+                    <span className="text-slate-500 font-medium">Status:</span>
                     <span className={`font-bold ${node.is_registered ? "text-green-600" : "text-amber-600"}`}>
                       {node.is_registered ? "Terdaftar" : "Belum Terdaftar"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400 font-medium">Latitude:</span>
-                    <span className="font-mono text-slate-700">{node.latitude.toFixed(6)}</span>
+                    <span className="text-slate-500 font-medium">Latitude:</span>
+                    <span className="font-mono text-slate-800">{node.latitude.toFixed(6)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400 font-medium">Longitude:</span>
-                    <span className="font-mono text-slate-700">{node.longitude.toFixed(6)}</span>
+                    <span className="text-slate-500 font-medium">Longitude:</span>
+                    <span className="font-mono text-slate-800">{node.longitude.toFixed(6)}</span>
                   </div>
                 </div>
 

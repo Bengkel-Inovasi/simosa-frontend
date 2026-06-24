@@ -95,7 +95,28 @@ body {
   box-shadow: 0 8px 24px rgba(112, 130, 105, 0.12) !important;
 }
 
+.leaflet-popup-content {
+  color: #222c21 !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* Force dark colors for headings inside Leaflet Popups */
+.leaflet-popup-content h1,
+.leaflet-popup-content h2,
+.leaflet-popup-content h3,
+.leaflet-popup-content h4 {
+  color: #3d483b !important;
+}
+
+/* Form inputs inside leaflet popups */
+.leaflet-popup-content input {
+  color: #222c21 !important;
+  background-color: #f8faf7 !important;
+  border-color: #dbe3da !important;
+}
+
 .leaflet-popup-tip {
   background: #ffffff !important;
   border: 1px solid #d1d9cd !important;
 }
+
