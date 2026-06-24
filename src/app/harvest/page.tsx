@@ -26,6 +26,7 @@ export default function HarvestPage() {
   const [price, setPrice] = useState("");
   const [expenses, setExpenses] = useState<{ name: string; amount: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [predictedTbsPrice, setPredictedTbsPrice] = useState<number | null>(null);
 
   const fetchHarvests = () => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/harvests`)
@@ -42,6 +43,16 @@ export default function HarvestPage() {
 
   useEffect(() => {
     fetchHarvests();
+
+    // Fetch predicted TBS price from CPO pricing API
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/cpo-price`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.price_tbs) {
+          setPredictedTbsPrice(Math.round(data.price_tbs));
+        }
+      })
+      .catch((err) => console.error("Error fetching predicted TBS price:", err));
   }, []);
 
   const addExpense = () => {
@@ -230,7 +241,19 @@ export default function HarvestPage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-[#556351] uppercase tracking-wider">Harga (Rp/kg)</label>
+                    <div className="flex justify-between items-center gap-1">
+                      <label className="text-xs font-bold text-[#556351] uppercase tracking-wider">Harga (Rp/kg)</label>
+                      {predictedTbsPrice && (
+                        <button
+                          type="button"
+                          onClick={() => setPrice(predictedTbsPrice.toString())}
+                          className="text-[9px] text-[#708269] hover:text-[#5c6b57] hover:underline font-extrabold focus:outline-none cursor-pointer flex items-center gap-0.5 whitespace-nowrap bg-[#708269]/5 hover:bg-[#708269]/10 px-1.5 py-0.5 rounded border border-[#708269]/10 shadow-sm"
+                          title="Gunakan perkiraan harga TBS berdasarkan harga CPO global hari ini"
+                        >
+                          Prediksi: Rp {predictedTbsPrice}
+                        </button>
+                      )}
+                    </div>
                     <input
                       type="number"
                       step="any"
