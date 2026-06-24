@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Node } from "@/types";
 import { useAuth } from "@/context/AuthContext";
+import { useSocket } from "@/hooks/useSocket";
 import { Radio, Edit2, Check, Shield } from "lucide-react";
 
 // Fix Leaflet marker icons issues
@@ -30,6 +31,7 @@ const unregisteredIcon = L.icon({
 export default function MonitoringMap() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const { token, isAuthenticated } = useAuth();
+  const { notification } = useSocket();
   
   // States for editing node alias on map popup
   const [editingMac, setEditingMac] = useState<string | null>(null);
@@ -44,7 +46,7 @@ export default function MonitoringMap() {
 
   useEffect(() => {
     fetchNodes();
-  }, []);
+  }, [notification]);
 
   const handleUpdateAlias = async (mac: string) => {
     try {
