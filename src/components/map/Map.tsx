@@ -90,8 +90,12 @@ export default function MonitoringMap() {
         style={{ background: "#f8faf7" }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+          url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=Z8hJfiTYln0fyM2LuzFr"
+          tileSize={512}
+          zoomOffset={-1}
+          minZoom={1}
+          maxZoom={20}
         />
         {nodes.map((node) => (
           <Marker

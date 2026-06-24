@@ -66,8 +66,7 @@ body {
 }
 
 .leaflet-tile-pane {
-  /* soft clean tint filter */
-  filter: sepia(10%) hue-rotate(60deg) saturate(90%) brightness(98%);
+  /* removed tint filter to show satellite/hybrid colors correctly */
 }
 
 .leaflet-bar {
