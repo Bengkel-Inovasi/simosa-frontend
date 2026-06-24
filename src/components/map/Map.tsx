@@ -69,17 +69,17 @@ export default function MonitoringMap() {
   };
 
   return (
-    <div className="h-full w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-950 relative">
+    <div className="h-full w-full rounded-3xl overflow-hidden border border-[#e3e8e2] shadow-2xl bg-white relative">
       {/* Legend overlay */}
-      <div className="absolute bottom-4 left-4 z-[1000] glass-card px-4 py-3 rounded-2xl border border-slate-800/80 space-y-2 text-xs">
-        <h4 className="font-bold text-slate-200 border-b border-slate-800 pb-1.5 mb-1.5 uppercase tracking-wider text-[10px]">Status Node</h4>
+      <div className="absolute bottom-4 left-4 z-[1000] glass-card px-4 py-3 rounded-2xl border border-[#e3e8e2] bg-white space-y-2 text-xs shadow-md">
+        <h4 className="font-bold text-[#3d483b] border-b border-slate-100 pb-1.5 mb-1.5 uppercase tracking-wider text-[10px]">Status Node</h4>
         <div className="flex items-center space-x-2">
           <span className="h-3 w-3 rounded-full bg-green-500 shadow-sm shadow-green-500/50"></span>
-          <span className="text-slate-300">Terdaftar (Registered)</span>
+          <span className="text-[#556351] font-semibold">Terdaftar (Registered)</span>
         </div>
         <div className="flex items-center space-x-2">
           <span className="h-3 w-3 rounded-full bg-yellow-500 shadow-sm shadow-yellow-500/50"></span>
-          <span className="text-slate-300">Baru Terdeteksi (Unregistered)</span>
+          <span className="text-[#556351] font-semibold">Baru Terdeteksi (Unregistered)</span>
         </div>
       </div>
 
@@ -87,7 +87,7 @@ export default function MonitoringMap() {
         center={[-0.7893, 113.9213]} // Center on Central Kalimantan (Palm Oil Area)
         zoom={6}
         className="h-full w-full"
-        style={{ background: "#0b0f19" }}
+        style={{ background: "#f8faf7" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -100,27 +100,27 @@ export default function MonitoringMap() {
             icon={node.is_registered ? registeredIcon : unregisteredIcon}
           >
             <Popup className="custom-popup">
-              <div className="p-2 space-y-3 min-w-[200px]">
-                <div className="flex items-start justify-between border-b border-slate-800 pb-2">
+              <div className="p-2 space-y-3 min-w-[200px] text-slate-800 bg-white">
+                <div className="flex items-start justify-between border-b border-slate-200 pb-2">
                   <div>
                     {editingMac === node.mac_address ? (
-                      <div className="flex items-center bg-slate-900 border border-slate-700 rounded px-1 py-0.5 mt-1">
+                      <div className="flex items-center bg-slate-50 border border-slate-300 rounded px-1 py-0.5 mt-1">
                         <input
                           type="text"
                           value={tempAlias}
                           onChange={(e) => setTempAlias(e.target.value)}
-                          className="bg-transparent text-white text-xs font-semibold focus:outline-none w-28 px-1"
+                          className="bg-transparent text-slate-800 text-xs font-semibold focus:outline-none w-28 px-1"
                           placeholder="Edit Alias"
                         />
                         <button
                           onClick={() => handleUpdateAlias(node.mac_address)}
-                          className="p-1 text-green-400 hover:text-green-300"
+                          className="p-1 text-[#708269] hover:text-[#5c6b57]"
                         >
                           <Check className="h-3 w-3" />
                         </button>
                       </div>
                     ) : (
-                      <h3 className="font-extrabold text-sm text-slate-100 flex items-center gap-1.5">
+                      <h3 className="font-extrabold text-sm text-[#3d483b] flex items-center gap-1.5">
                         {node.alias || node.mac_address}
                         {isAuthenticated && (
                           <button
@@ -128,7 +128,7 @@ export default function MonitoringMap() {
                               setEditingMac(node.mac_address);
                               setTempAlias(node.alias || "");
                             }}
-                            className="p-0.5 text-slate-500 hover:text-green-400"
+                            className="p-0.5 text-slate-400 hover:text-[#708269] transition"
                             title="Edit Alias"
                           >
                             <Edit2 className="h-3 w-3" />
@@ -136,31 +136,31 @@ export default function MonitoringMap() {
                         )}
                       </h3>
                     )}
-                    <span className="text-[10px] text-slate-500 block font-mono mt-0.5">{node.mac_address}</span>
+                    <span className="text-[10px] text-slate-400 block font-mono mt-0.5">{node.mac_address}</span>
                   </div>
                 </div>
 
                 <div className="space-y-1 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-500 font-medium">Status:</span>
-                    <span className={`font-semibold ${node.is_registered ? "text-green-400" : "text-yellow-400"}`}>
+                    <span className="text-slate-400 font-medium">Status:</span>
+                    <span className={`font-bold ${node.is_registered ? "text-green-600" : "text-amber-600"}`}>
                       {node.is_registered ? "Terdaftar" : "Belum Terdaftar"}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500 font-medium">Latitude:</span>
-                    <span className="font-mono text-slate-300">{node.latitude.toFixed(6)}</span>
+                    <span className="text-slate-400 font-medium">Latitude:</span>
+                    <span className="font-mono text-slate-700">{node.latitude.toFixed(6)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500 font-medium">Longitude:</span>
-                    <span className="font-mono text-slate-300">{node.longitude.toFixed(6)}</span>
+                    <span className="text-slate-400 font-medium">Longitude:</span>
+                    <span className="font-mono text-slate-700">{node.longitude.toFixed(6)}</span>
                   </div>
                 </div>
 
                 {!node.is_registered && (
-                  <div className="rounded bg-amber-500/10 border border-amber-500/20 p-2 flex items-center space-x-1.5">
+                  <div className="rounded bg-amber-50 border border-amber-200 p-2 flex items-center space-x-1.5 shadow-sm">
                     <Radio className="h-3.5 w-3.5 text-amber-500 animate-pulse flex-shrink-0" />
-                    <span className="text-[10px] font-bold text-amber-400">Node Baru Terdeteksi</span>
+                    <span className="text-[10px] font-bold text-amber-800">Node Baru Terdeteksi</span>
                   </div>
                 )}
 
@@ -170,7 +170,7 @@ export default function MonitoringMap() {
                       setTempAlias(node.alias || node.mac_address);
                       handleUpdateAlias(node.mac_address);
                     }}
-                    className="w-full mt-2 bg-green-500 hover:bg-green-600 text-slate-950 font-bold text-xs py-1.5 px-3 rounded transition flex items-center justify-center gap-1 cursor-pointer"
+                    className="w-full mt-2 bg-[#708269] hover:bg-[#5c6b57] text-white font-bold text-xs py-1.5 px-3 rounded transition flex items-center justify-center gap-1 cursor-pointer shadow-sm shadow-[#708269]/10"
                   >
                     <Shield className="h-3.5 w-3.5" /> Daftarkan Node
                   </button>
