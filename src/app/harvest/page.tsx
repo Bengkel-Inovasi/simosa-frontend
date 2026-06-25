@@ -100,10 +100,20 @@ export default function HarvestPage() {
   const exportCSV = async (harvest: Harvest) => {
     const harvestIndex = harvests.findIndex((h) => h.id === harvest.id);
     const prevHarvest = harvestIndex > 0 ? harvests[harvestIndex - 1] : null;
-    const startDate = prevHarvest ? prevHarvest.harvest_date : new Date(0).toISOString();
+    
+    let startDate = new Date(0).toISOString();
+    if (prevHarvest) {
+      const pDate = new Date(prevHarvest.harvest_date);
+      pDate.setUTCHours(23, 59, 59, 999);
+      startDate = pDate.toISOString();
+    }
+
+    const hDate = new Date(harvest.harvest_date);
+    hDate.setUTCHours(23, 59, 59, 999);
+    const endDate = hDate.toISOString();
 
     const avgRes = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/harvests/averages?start=${startDate}&end=${harvest.harvest_date}`
+      `${process.env.NEXT_PUBLIC_API_URL}/harvests/averages?start=${startDate}&end=${endDate}`
     );
     const averages = await avgRes.json();
 
